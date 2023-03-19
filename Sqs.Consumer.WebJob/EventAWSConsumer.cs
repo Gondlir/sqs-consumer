@@ -47,6 +47,7 @@ namespace Sqs.Consumer.WebJob
                         await _awsClient.DeleteMessageAsync(queueUrlReponse.QueueUrl, message.ReceiptHandle);
                     }
                     await Task.Delay(3000);
+                    return;
                 }
                 catch (Exception ex)
                 {
