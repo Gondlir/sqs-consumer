@@ -1,4 +1,5 @@
-﻿using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
+﻿using Amazon;
+using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using Customers.Consumer.WebJob.Abstractions;
@@ -13,9 +14,9 @@ namespace Customers.Consumer.WebJob
     public sealed class QueueConsumerService : BackgroundService
     {
         private const string _url = "customers";
-        private static readonly IAmazonSQS _amazonSQS;
+        //private readonly IAmazonSQS _amazonSQS;
         private readonly IMediator _mediator;
-        //private static AmazonSQSClient _awsClient = new AmazonSQSClient(RegionEndpoint.USEast1);
+        private static AmazonSQSClient _awsClient = new AmazonSQSClient(RegionEndpoint.USEast1);
         private readonly IOptions<QueueSettings> _queuSettings;
         private readonly ILogger<QueueConsumerService> _logger;
         public QueueConsumerService(IAmazonSQS amazonSQS, IOptions<QueueSettings> queuSettings, 
@@ -29,7 +30,7 @@ namespace Customers.Consumer.WebJob
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var queueUrlReponse = await _amazonSQS.GetQueueUrlAsync(_queuSettings.Value.Name);
+            var queueUrlReponse = await _awsClient.GetQueueUrlAsync(_queuSettings.Value.Name);
             await ProcessQueueCustomerMessageAsync(queueUrlReponse, stoppingToken);
         }
         #region Private Methods
@@ -47,7 +48,7 @@ namespace Customers.Consumer.WebJob
             {
                 try
                 {
-                    var response = await _amazonSQS.ReceiveMessageAsync(receivedMessageRequest, cancellationToken);
+                    var response = await _awsClient.ReceiveMessageAsync(receivedMessageRequest, cancellationToken);
                     //if (response.Messages is null || response.Messages.Count == 0)
                     //    return;
 
@@ -72,10 +73,10 @@ namespace Customers.Consumer.WebJob
                             continue;
                         }
                         // delete messages from queue
-                        await _amazonSQS.DeleteMessageAsync(queueUrlReponse.QueueUrl, message.ReceiptHandle);
+                        await _awsClient.DeleteMessageAsync(queueUrlReponse.QueueUrl, message.ReceiptHandle);
                     }
                     await Task.Delay(3000, cancellationToken);
-                    return;
+                    //return;
                 }
                 catch (Exception ex)
                 {

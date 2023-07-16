@@ -2,20 +2,20 @@
 
 namespace Customers.Consumer.WebJob.Models
 {
-    public sealed class CustomerCreatedMessage : IMessageSqs
+    public sealed class CustomerCreated : IMessageSqs
     {
         public Guid Id { get; init; }
         public string Name { get; init; }
         public string Email { get; init; }
-        public string GitHubUserName { get; init; }
+        public string GitHubUsername { get; init; }
     }
-    public sealed class CustomerUpdatedMessage : IMessageSqs
+    public sealed class CustomerUpdated : IMessageSqs
     {
         public string? Name { get; init; }
         public string? Email { get; init; }
-        public string? GitHubUserName { get; init; }
+        public string? GitHubUsername { get; init; }
     }
-    public sealed class CustomerDeletedMessage : IMessageSqs
+    public sealed class CustomerDeleted : IMessageSqs
     {
         public Guid Id { get; init; }
     }

@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Customers.Consumer.WebJob.Handlers
 {
-    public sealed class CustomerCreatedHandler : IRequestHandler<CustomerCreatedMessage>
+    public sealed class CustomerCreatedHandler : IRequestHandler<CustomerCreated>
     {
         private readonly ILogger<CustomerCreatedHandler> _logger;
 
@@ -12,7 +12,7 @@ namespace Customers.Consumer.WebJob.Handlers
             _logger = logger;
         }
 
-        public Task Handle(CustomerCreatedMessage request, CancellationToken cancellationToken)
+        public Task Handle(CustomerCreated request, CancellationToken cancellationToken)
         {
             // do stuffs 
             _logger.LogInformation(request.Name);
