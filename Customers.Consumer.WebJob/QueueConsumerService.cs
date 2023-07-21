@@ -13,8 +13,7 @@ namespace Customers.Consumer.WebJob
 {
     public sealed class QueueConsumerService : BackgroundService
     {
-        private const string _url = "customers";
-        //private readonly IAmazonSQS _amazonSQS;
+        private const string _url = "customers";       
         private readonly IMediator _mediator;
         private static AmazonSQSClient _awsClient = new AmazonSQSClient(RegionEndpoint.USEast1);
         private readonly IOptions<QueueSettings> _queuSettings;
@@ -22,7 +21,6 @@ namespace Customers.Consumer.WebJob
         public QueueConsumerService(IAmazonSQS amazonSQS, IOptions<QueueSettings> queuSettings, 
             IMediator mediator, ILogger<QueueConsumerService> logger)
         {
-            //_amazonSQS = amazonSQS;
             _queuSettings = queuSettings;
             _mediator = mediator;
             _logger = logger;
@@ -49,9 +47,7 @@ namespace Customers.Consumer.WebJob
                 try
                 {
                     var response = await _awsClient.ReceiveMessageAsync(receivedMessageRequest, cancellationToken);
-                    //if (response.Messages is null || response.Messages.Count == 0)
-                    //    return;
-
+                   
                     foreach (var message in response.Messages)
                     {
                         var messageType = message.MessageAttributes["MessageType"].StringValue;
@@ -72,11 +68,11 @@ namespace Customers.Consumer.WebJob
                             _logger.LogError(ex, "Houve uma falha no processamento da mensagem");
                             continue;
                         }
-                        // delete messages from queue
+                      
                         await _awsClient.DeleteMessageAsync(queueUrlReponse.QueueUrl, message.ReceiptHandle);
                     }
                     await Task.Delay(3000, cancellationToken);
-                    //return;
+                   
                 }
                 catch (Exception ex)
                 {

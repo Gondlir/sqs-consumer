@@ -19,5 +19,4 @@ namespace Customers.Consumer.WebJob.Models
     {
         public Guid Id { get; init; }
     }
-    // UPDATE, DELETE 
 }
